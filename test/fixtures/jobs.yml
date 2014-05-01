@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  size: 1
+  length: 1
+  reference_file: MyString
+  md5sum: MyString
+  type: 
+  operation: MyString
+
+two:
+  size: 1
+  length: 1
+  reference_file: MyString
+  md5sum: MyString
+  type: 
+  operation: MyString
