@@ -14,9 +14,9 @@
 ActiveRecord::Schema.define(version: 20140501175751) do
 
   create_table "jobs", force: true do |t|
-    t.integer  "size"   ,  :limit => 8  
-    t.integer  "start"  ,  :limit => 8  
-    t.integer  "length" ,  :limit => 8  
+    t.integer  "size",           limit: 8
+    t.integer  "start",          limit: 8
+    t.integer  "length",         limit: 8
     t.string   "reference_file"
     t.string   "md5sum"
     t.string   "operation"
