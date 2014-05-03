@@ -3,9 +3,9 @@ defaults: &defaults
   encoding: utf8
   collation: utf8_general_ci
   reconnect: true
-  username: objectbench 
-  password: objectbench 
-  host: 172.22.3.217
+  username:  <%= ENV['OBJECTBENCH_DB_USER'] %>
+  password:  <%= ENV['OBJECTBENCH_DB_PASS'] %> 
+  host:      <%= ENV['OBJECTBENCH_DB_HOST'] %>
 
 
 development:

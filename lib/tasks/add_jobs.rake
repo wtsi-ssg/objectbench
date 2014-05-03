@@ -1,8 +1,9 @@
 def self.add_single_job_write (options={})
   job=Job.new(:operation =>"Write",
               :reference_file =>options[:file],
-              :system=>options[:system],
-              :length =>options[:length],  )
+              :storage_type=>options[:storage_type],
+              :length =>options[:length],  
+              :tag =>options[:tag], )
   job.save
   Resque.enqueue(Job, job.id)
 end
@@ -34,8 +35,9 @@ task :add_writes => :environment  do
   for itteration in 1..tasks
     length,scaled=choose_size(scaled)
     add_single_job_write( :file =>file,
-                          :system=>ENV['FILE_TEST'] || "NULL",
-                          :length =>ENV['FILE_SIZE'] || length,  )
+                          :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
+                          :length =>ENV['FILE_SIZE'] || length,
+                          :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )
     puts scaled.inspect
   end
 end

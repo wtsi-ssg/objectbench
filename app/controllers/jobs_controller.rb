@@ -69,6 +69,6 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params[:job]
+      params.require(:job).permit(:reference_file, :md5sum, :operation, :storage_type, :aasm_state)
     end
 end

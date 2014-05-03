@@ -29,6 +29,12 @@ gem 'spring',        group: :development
 # Use resque ( this is the whole point really )
 gem 'resque', :require => 'resque/server'   
 
+# Add as works as a state machine
+gem 'aasm'
+
+# Document schema in model
+gem 'annotate', ">=2.6.0"
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

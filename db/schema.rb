@@ -11,19 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140501175751) do
+ActiveRecord::Schema.define(version: 20140502220057) do
 
   create_table "jobs", force: true do |t|
     t.integer  "size",           limit: 8
     t.integer  "start",          limit: 8
     t.integer  "length",         limit: 8
     t.string   "reference_file"
-    t.string   "md5sum"
     t.string   "operation"
-    t.string   "system"
+    t.string   "storage_type"
     t.datetime "start_time"
     t.datetime "end_time"
     t.string   "aasm_state"
+    t.float    "work_starts"
+    t.float    "work_ends"
+    t.string   "tag"
+    t.string   "object_id"
   end
 
 end
