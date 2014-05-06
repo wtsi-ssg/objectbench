@@ -1,0 +1,13 @@
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+export OBJECTBENCH_DB_USER=objectbench
+export OBJECTBENCH_DB_PASS=objectbench
+export OBJECTBENCH_DB_HOST=172.22.3.217
+export OBJECTBENCH_REDIS_HOST=172.22.3.217
+export OBJECTBENCH_REDIS_PORT=6379
+export OBJECTBENCH_NULL_DRIVER_READ=629145600
+export OBJECTBENCH_NULL_DRIVER_WRITE=629145600
+
+cd /nfs/users/nfs_j/jb23/src/object_bench
+bundle exec rake add_writes
+bundle exec rake wait_for_stable
