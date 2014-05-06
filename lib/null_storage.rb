@@ -23,4 +23,8 @@ module NullStorage
     sleep(sleep_time)
   end
 
+  def null_init
+    logger.info  "Null Init"
+  end
+
 end

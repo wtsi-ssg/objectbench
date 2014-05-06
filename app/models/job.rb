@@ -12,10 +12,10 @@
 #  start_time     :datetime
 #  end_time       :datetime
 #  aasm_state     :string(255)
-#  work_starts    :float
-#  work_ends      :float
 #  tag            :string(255)
 #  object_id      :string(255)
+#  work_starts    :string(255)
+#  work_ends      :string(255)
 #
 
 class Job < ActiveRecord::Base

@@ -35,6 +35,9 @@ gem 'aasm'
 # Document schema in model
 gem 'annotate', ">=2.6.0"
 
+# The cleversafe gem
+gem 'cleversafe'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
