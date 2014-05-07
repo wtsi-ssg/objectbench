@@ -15,7 +15,7 @@ export OBJECTBENCH_INITAL_FILES="/warehouse/isg_wh_scratch01/users/jb23/object_t
 # This is the distribution of file sizes in the main test
 export OBJECTBENCH_TEST_WRITE_DISTRIBUTION="$OBJECTBENCH_INITAL_DISTRIBUTION"
 # This is the distribution of Write,reads and partial reads
-export OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION="600,300,0"
+export OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION="600,300,1"
 
 echo "Tagging tests as ${OBJECTBENCH_TAG}"
 export FILE_TEST="CleverSafe"

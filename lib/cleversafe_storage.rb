@@ -16,7 +16,12 @@ module CleversafeStorage
                                         ENV['OBJECTBENCH_CLEVERSAFE_USERNAME'],
                                         ENV['OBJECTBENCH_CLEVERSAFE_PASSWORD']
     download=Tempfile.new('objectbench', ENV['OBJECTBENCH_TMPDIR'] || '/tmp',:encoding => 'ascii-8bit')
-    download.write(resource.get)
+
+    if !self.start.nil?
+      download.write(resource.get({"Range" => "bytes=#{self.start}-#{self.start+self.size}"}))
+    else
+      download.write(resource.get)
+    end
     # This flushes the io
     download.size
     verified=FileUtils.compare_file(self.reference_file,download.path)
@@ -30,6 +35,8 @@ module CleversafeStorage
 
   def cleversafe_seek_read_operation
     logger.info  "Cleversafe Seek Read #{self.id}"
+    self.cleversafe_read_operation
+    #resource.get({"Range" => "bytes=0-3"})
   end
 
   def cleversafe_init
