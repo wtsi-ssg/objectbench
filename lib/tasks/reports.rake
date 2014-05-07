@@ -32,9 +32,10 @@ task :display_report => :environment  do
       bytes=0
       work_to_consider.each do
         |task|
-        bytes+=(bytes_per_second[task.id]*interval)
+        duration=[task.work_ends.to_f,end_sample].min-[task.work_starts.to_f,start_sample].max
+        bytes+=(bytes_per_second[task.id]*duration)
       end 
-      puts "#{start_sample},#{end_sample},#{operation},#{work_to_consider.size},#{bytes}"
+      puts "#{start_sample},#{end_sample},#{operation},#{work_to_consider.size},#{bytes.to_i}"
     end 
     start_sample+=interval
     end_sample+=interval
