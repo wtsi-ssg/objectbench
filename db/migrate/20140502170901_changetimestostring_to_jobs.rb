@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ChangetimestostringToJobs < ActiveRecord::Migration
   # Yes this deletes data....
    def self.up

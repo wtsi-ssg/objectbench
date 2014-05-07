@@ -13,7 +13,7 @@ def self.add_single_full_read_job(options={})
               :reference_file =>options[:file],
               :length =>options[:length],
               :storage_type=>options[:storage_type],
-              :object_id=>options[:object_id],
+              :object_identifier=>options[:object_identifier],
               :tag =>options[:tag], )
   job.save
   Resque.enqueue(Job, job.id)
@@ -25,7 +25,7 @@ def self.add_single_partial_read_job(options={})
               :size =>options[:size],
               :start =>options[:start],
               :storage_type=>options[:storage_type],
-              :object_id=>options[:object_id],
+              :object_identifier=>options[:object_identifier],
               :tag =>options[:tag], )
   job.save
   Resque.enqueue(Job, job.id)
@@ -46,6 +46,7 @@ def self.choose_size(histogram)
   histogram.each { |a| sum+=a }
   position=rand(1..sum)
   location=0
+  puts histogram.inspect
   while !histogram[location].nil? && position>histogram[location]
     position-=histogram[location]
     location+=1
@@ -133,7 +134,7 @@ task :load_tests=> :environment  do
                             :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )
     when :read
       object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag" )
-      add_single_full_read_job(  :object_id=>object.object_id,
+      add_single_full_read_job(  :object_identifier=>object.object_identifier,
                                  :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
                                  :length =>object.length,
                                  :file =>object.reference_file,
@@ -143,7 +144,7 @@ task :load_tests=> :environment  do
       puts object.id
       size=rand(1..[object.length,16384].min)
       start=rand(0..(object.length-size))
-      add_single_partial_read_job(  :object_id=>object.object_id,
+      add_single_partial_read_job(  :object_identifier=>object.object_identifier,
                                     :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
                                     :size =>size,
 				    :start =>start,

@@ -1,21 +1,22 @@
+# -*- encoding : utf-8 -*-
 # == Schema Information
 #
 # Table name: jobs
 #
-#  id             :integer          not null, primary key
-#  size           :integer
-#  start          :integer
-#  length         :integer
-#  reference_file :string(255)
-#  operation      :string(255)
-#  storage_type   :string(255)
-#  start_time     :datetime
-#  end_time       :datetime
-#  aasm_state     :string(255)
-#  tag            :string(255)
-#  object_id      :string(255)
-#  work_starts    :string(255)
-#  work_ends      :string(255)
+#  id                :integer          not null, primary key
+#  size              :integer
+#  start             :integer
+#  length            :integer
+#  reference_file    :string(255)
+#  operation         :string(255)
+#  storage_type      :string(255)
+#  start_time        :datetime
+#  end_time          :datetime
+#  aasm_state        :string(255)
+#  tag               :string(255)
+#  object_identifier :string(255)
+#  work_starts       :string(255)
+#  work_ends         :string(255)
 #
 
 class Job < ActiveRecord::Base

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddTagtoJobs < ActiveRecord::Migration
    def self.up
      add_column :jobs, :tag, :string

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Deletemd5sumToJobs < ActiveRecord::Migration
   # Yes this deletes data....
    def self.up

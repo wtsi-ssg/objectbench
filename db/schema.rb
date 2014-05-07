@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# -*- encoding : utf-8 -*-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140505224335) do
+ActiveRecord::Schema.define(version: 20140507093536) do
 
   create_table "jobs", force: true do |t|
-    t.integer  "size",           limit: 8
-    t.integer  "start",          limit: 8
-    t.integer  "length",         limit: 8
+    t.integer  "size",              limit: 8
+    t.integer  "start",             limit: 8
+    t.integer  "length",            limit: 8
     t.string   "reference_file"
     t.string   "operation"
     t.string   "storage_type"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20140505224335) do
     t.datetime "end_time"
     t.string   "aasm_state"
     t.string   "tag"
-    t.string   "object_id"
+    t.string   "object_identifier"
     t.string   "work_starts"
     t.string   "work_ends"
   end

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ChangeTimeToStringJob < ActiveRecord::Migration
   def self.up
     remove_column :jobs, :work_starts

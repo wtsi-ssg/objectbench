@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ObjectIdtoobjectIdentifierJobs < ActiveRecord::Migration
   def self.up
     change_table :jobs do |t|

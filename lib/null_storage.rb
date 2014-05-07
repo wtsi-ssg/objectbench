@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module NullStorage
   # Null storage has a default read and write speed of 600MB/s
   default_read=629145600
@@ -7,7 +8,7 @@ module NullStorage
     sleep_time=self.length/( ENV['OBJECTBENCH_NULL_DRIVER_WRITE'].to_i || default_write )
     logger.info  "Null Write #{self.id} waiting #{sleep_time}"
     sleep(sleep_time)
-    self.object_id=SecureRandom.uuid 
+    self.object_identifier=SecureRandom.uuid 
     self.save
   end
 

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddStartStopTimeToJobs < ActiveRecord::Migration
    def self.up
           add_column :jobs, :work_starts, :datetime

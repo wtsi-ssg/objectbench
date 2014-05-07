@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module GenericOperations
   #require 'digest/md5'
   include NullStorage
