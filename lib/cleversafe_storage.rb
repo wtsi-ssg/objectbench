@@ -18,10 +18,16 @@ module CleversafeStorage
     download=Tempfile.new('objectbench', ENV['OBJECTBENCH_TMPDIR'] || '/tmp',:encoding => 'ascii-8bit')
 
     if !self.start.nil?
-      download.write(resource.get({"Range" => "bytes=#{self.start}-#{self.start+self.size}"}))
+      options={"Range" => "bytes=#{self.start}-#{self.start+self.size}"}
     else
-      download.write(resource.get)
+      options={}
     end
+
+    resource.get(options)  do |resp|
+      download.write(resp)
+      puts resp.length
+    end
+    #download.write(resource.get(options))
     # This flushes the io
     download.size
     verified=FileUtils.compare_file(self.reference_file,download.path)

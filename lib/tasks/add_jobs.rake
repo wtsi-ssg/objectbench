@@ -46,7 +46,7 @@ def self.choose_size(histogram)
   histogram.each { |a| sum+=a }
   position=rand(1..sum)
   location=0
-  puts histogram.inspect
+  #puts histogram.inspect
   while !histogram[location].nil? && position>histogram[location]
     position-=histogram[location]
     location+=1
@@ -115,13 +115,12 @@ task :load_tests=> :environment  do
     files=ENV['OBJECTBENCH_INITAL_FILES'].split(" ")
   end 
   tasks=0
-  puts workload.inspect
   workload.each { |a| tasks+=a }
   for itteration in 1..tasks
     type_of_work,workload=choose_work(workload)
     case type_of_work
     when :write
-      position,length,histogram=choose_size(histogram)
+      position,length,dispose=choose_size(histogram)
       if ! files[position].nil?
         file=files[position]
         length=File.stat(file).size  
@@ -141,8 +140,7 @@ task :load_tests=> :environment  do
                                  :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )  
     when :partial_read
       object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag" )
-      puts object.id
-      size=rand(1..[object.length,16384].min)
+      size=rand(1..[object.length-2,16384].min)
       start=rand(0..(object.length-size))
       add_single_partial_read_job(  :object_identifier=>object.object_identifier,
                                     :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
