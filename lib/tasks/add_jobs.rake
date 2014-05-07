@@ -51,7 +51,7 @@ def self.choose_size(histogram)
     location+=1
   end
   histogram[location]-=1
-  return rand(10**location..10**(location+1))-1,histogram
+  return location,rand(10**location..10**(location+1))-1,histogram
 end
 
 def self.choose_work(workload)
@@ -79,16 +79,24 @@ task :add_initial_writes => :environment  do
   # 7500,9000,6000,9898,51247,35313,12200,2536,11923,10232,267
   histogram=ENV['OBJECTBENCH_INITAL_DISTRIBUTION'] || "86, 103, 68, 113, 588, 405, 140, 29, 137, 117, 3" 
   distribution=histogram.split(",").map { |s| s.to_i }
+  if ! ENV['OBJECTBENCH_INITAL_FILES'].nil?
+    files=ENV['OBJECTBENCH_INITAL_FILES'].split(" ")
+  end 
   tasks=0
   distribution.each { |a| tasks+=a }
-  file=ENV['FILE'] || '/warehouse/isg_wh_scratch01/users/jb23/object_test/7231_1#146.bam'
   # create a write job foreach 
   puts "Generating writes"
   for itteration in 1..tasks
-    length,distribution=choose_size(distribution)
+    position,length,distribution=choose_size(distribution)
+    if ! files[position].nil?
+      file=files[position]
+      length=File.stat(file).size  
+    else
+      file=ENV['FILE'] || '/warehouse/isg_wh_scratch01/users/jb23/object_test/7231_1#146.bam'
+    end
     add_single_job_write( :file =>file,
                           :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
-                          :length =>ENV['FILE_SIZE'] || length,
+                          :length =>length,
                           :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )
   end
 end
@@ -102,7 +110,9 @@ task :load_tests=> :environment  do
   workload=workload_s.split(",").map { |s| s.to_i }
   # There must be more wirtes to do than the number of writes specified in the workload otherwise the 
   # system will get stuck looking for a write to do when it doesn't knwo what size it would be.
-  file=ENV['FILE'] || '/warehouse/isg_wh_scratch01/users/jb23/object_test/7231_1#146.bam'
+  if ! ENV['OBJECTBENCH_INITAL_FILES'].nil?
+    files=ENV['OBJECTBENCH_INITAL_FILES'].split(" ")
+  end 
   tasks=0
   puts workload.inspect
   workload.each { |a| tasks+=a }
@@ -110,10 +120,16 @@ task :load_tests=> :environment  do
     type_of_work,workload=choose_work(workload)
     case type_of_work
     when :write
-      length,histogram=choose_size(histogram)
+      position,length,histogram=choose_size(histogram)
+      if ! files[position].nil?
+        file=files[position]
+        length=File.stat(file).size  
+      else
+        file=ENV['FILE'] || '/warehouse/isg_wh_scratch01/users/jb23/object_test/7231_1#146.bam'
+      end 
       add_single_job_write( :file =>file,
                             :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
-                            :length =>ENV['FILE_SIZE'] || length,
+                            :length => length,
                             :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )
     when :read
       object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag" )
