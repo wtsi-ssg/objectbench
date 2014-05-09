@@ -12,7 +12,7 @@ module NullStorage
     self.save
   end
 
-  def null_read_operation
+  def null_read_operation(ignore)
     sleep_time=self.length/( ENV['OBJECTBENCH_NULL_DRIVER_READ'].to_i || default_read )
     logger.info  "Null Read #{self.id} waiting #{sleep_time}"
     sleep(sleep_time)

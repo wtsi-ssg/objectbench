@@ -17,7 +17,7 @@ export OBJECTBENCH_TEST_WRITE_DISTRIBUTION="$OBJECTBENCH_INITAL_DISTRIBUTION"
 export OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION="600,300,0"
 
 echo "Tagging tests as ${OBJECTBENCH_TAG}"
-export FILE_TEST="Null_Storage"
+export OBJECTBENCH_SYSTEM_UNDER_TEST="Null_Storage"
 cd /nfs/users/nfs_j/jb23/src/object_bench
 bundle exec rake add_initial_writes
 bundle exec rake wait_for_stable

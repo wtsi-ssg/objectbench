@@ -8,41 +8,28 @@ module CleversafeStorage
     self.save
   end
 
-  def cleversafe_read_operation
+  def cleversafe_read_operation(download)
     # I can't get the read api to work so lets take the other approach
     url="#{ENV['OBJECTBENCH_CLEVERSAFE_ENDPOINT']}#{ENV['OBJECTBENCH_CLEVERSAFE_VAULT']}/#{self.object_identifier}"
     logger.info  "Clevesafe Read #{url}"
     resource = RestClient::Resource.new url,
                                         ENV['OBJECTBENCH_CLEVERSAFE_USERNAME'],
                                         ENV['OBJECTBENCH_CLEVERSAFE_PASSWORD']
-    download=Tempfile.new('objectbench', ENV['OBJECTBENCH_TMPDIR'] || '/tmp',:encoding => 'ascii-8bit')
-
     if !self.start.nil?
-      options={"Range" => "bytes=#{self.start}-#{self.start+self.size}"}
+      options={"Range" => "bytes=#{self.start}-#{self.start+self.size-1}"}
     else
       options={}
     end
-
     resource.get(options)  do |resp|
       download.write(resp)
       puts resp.length
     end
     #download.write(resource.get(options))
-    # This flushes the io
-    download.size
-    verified=FileUtils.compare_file(self.reference_file,download.path)
-    # And this deletes the file
-    download.close
-    logger.info  "Clevesafe Read #{self.id} #{self.object_identifier} #{verified}"
-    if ! verified
-      raise "File corruption error"
-    end
   end
 
-  def cleversafe_seek_read_operation
+  def cleversafe_seek_read_operation(download)
     logger.info  "Cleversafe Seek Read #{self.id}"
-    self.cleversafe_read_operation
-    #resource.get({"Range" => "bytes=0-3"})
+    self.cleversafe_read_operation(download)
   end
 
   def cleversafe_init

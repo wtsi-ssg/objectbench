@@ -51,7 +51,7 @@ def self.choose_size(histogram)
     position-=histogram[location]
     location+=1
   end
-  histogram[location]-=1
+  #histogram[location]-=1
   return location,rand(10**location..10**(location+1))-1,histogram
 end
 
@@ -96,7 +96,7 @@ task :add_initial_writes => :environment  do
       file=ENV['FILE'] || '/warehouse/isg_wh_scratch01/users/jb23/object_test/7231_1#146.bam'
     end
     add_single_job_write( :file =>file,
-                          :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
+                          :storage_type=>ENV['OBJECTBENCH_SYSTEM_UNDER_TEST'] || "Null_Storage",
                           :length =>length,
                           :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )
   end
@@ -128,22 +128,23 @@ task :load_tests=> :environment  do
         file=ENV['FILE'] || '/warehouse/isg_wh_scratch01/users/jb23/object_test/7231_1#146.bam'
       end 
       add_single_job_write( :file =>file,
-                            :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
+                            :storage_type=>ENV['OBJECTBENCH_SYSTEM_UNDER_TEST'] || "Null_Storage",
                             :length => length,
                             :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )
     when :read
       object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag" )
       add_single_full_read_job(  :object_identifier=>object.object_identifier,
-                                 :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
+                                 :storage_type=>ENV['OBJECTBENCH_SYSTEM_UNDER_TEST'] || "Null_Storage",
                                  :length =>object.length,
                                  :file =>object.reference_file,
                                  :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )  
     when :partial_read
       object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag" )
-      size=rand(1..[object.length-2,16384].min)
-      start=rand(0..(object.length-size))
+      length=object.length || 0
+      size=rand(0..[length,16384].min)
+      start=rand(0..[(length-size),0].max)
       add_single_partial_read_job(  :object_identifier=>object.object_identifier,
-                                    :storage_type=>ENV['FILE_TEST'] || "Null_Storage",
+                                    :storage_type=>ENV['OBJECTBENCH_SYSTEM_UNDER_TEST'] || "Null_Storage",
                                     :size =>size,
 				    :start =>start,
                                     :file =>object.reference_file,
