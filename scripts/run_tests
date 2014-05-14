@@ -24,4 +24,7 @@ bundle exec rake wait_for_stable
 bundle exec rake load_tests
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
 bundle exec rake wait_for_stable
+echo "Checking once more"
+sleep 20 
+bundle exec rake wait_for_stable
 echo "Test Tagged as ${OBJECTBENCH_TAG}"

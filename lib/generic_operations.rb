@@ -1,9 +1,10 @@
 
 # -*- encoding : utf-8 -*-
 module GenericOperations
-  #require 'digest/md5'
+  include HttpHelper
   include NullStorage
   include CleversafeStorage
+  include WosStorage
 
   def start_work
     self.work_starts=Time.now.to_f.to_s
@@ -23,12 +24,12 @@ module GenericOperations
     case self.storage_type
     when "Null_Storage"
       self.null_write_operation
-    when "Woz"
+    when "Wos"
       self.wos_write_operation
     when "CleverSafe"
       self.cleversafe_write_operation
     else
-      raise "Unknown storage type: #{job.storage_type}, jobid #{id}"
+      raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
     self.stop_work
   end
@@ -40,12 +41,12 @@ module GenericOperations
     case self.storage_type
     when "Null_Storage"
       self.null_read_operation(download)
-    when "Woz"
+    when "Wos"
       self.wos_read_operation(download)
     when "CleverSafe"
       self.cleversafe_read_operation(download)
     else
-      raise "Unknown storage type: #{job.storage_type}, jobid #{id}"
+      raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
     self.stop_work
     download.close
@@ -86,12 +87,12 @@ module GenericOperations
     case self.storage_type
     when "Null_Storage"
       self.null_init
-    when "Woz"
+    when "Wos"
       self.wos_init
     when "CleverSafe"
       self.cleversafe_init
     else
-      raise "Unknown storage type: #{job.storage_type}, jobid #{id}"
+      raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
   end
 

@@ -10,7 +10,7 @@ export OBJECTBENCH_TAG="Test_run_$$"
 # 1-9: 86
 # 10-99 : 103
 export OBJECTBENCH_INITAL_DISTRIBUTION="86, 103, 68, 113, 588, 405, 140, 29, 137, 117, 3"
-export OBJECTBENCH_INITAL_DISTRIBUTION="86, 103, 68, 113, 588, 405, 140, 29"
+export OBJECTBENCH_INITAL_DISTRIBUTION="86, 103, 68, 113"
 export OBJECTBENCH_INITAL_FILES="/warehouse/isg_wh_scratch01/users/jb23/object_test/five_bytes  /warehouse/isg_wh_scratch01/users/jb23/object_test/11166_2#168.bai  /warehouse/isg_wh_scratch01/users/jb23/object_test/11128_8#0_phix.flagstat  /warehouse/isg_wh_scratch01/users/jb23/object_test/11330_1#19.bamcheck  /warehouse/isg_wh_scratch01/users/jb23/object_test/11304_1#86_phix_quality_error.txt  /warehouse/isg_wh_scratch01/users/jb23/object_test/11310_2#56_phix_quality_cycle_surv.txt  /warehouse/isg_wh_scratch01/users/jb23/object_test/6320_5.bai  /warehouse/isg_wh_scratch01/users/jb23/object_test/6244_1#9.bam  /warehouse/isg_wh_scratch01/users/jb23/object_test/6350_4#1.bam  /warehouse/isg_wh_scratch01/users/jb23/object_test/11149_5#12.cram  /warehouse/isg_wh_scratch01/users/jb23/object_test/7231_1#146.bam"
 # This is the distribution of file sizes in the main test
 export OBJECTBENCH_TEST_WRITE_DISTRIBUTION="$OBJECTBENCH_INITAL_DISTRIBUTION"

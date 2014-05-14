@@ -22,9 +22,7 @@ module CleversafeStorage
     end
     resource.get(options)  do |resp|
       download.write(resp)
-      puts resp.length
     end
-    #download.write(resource.get(options))
   end
 
   def cleversafe_seek_read_operation(download)
