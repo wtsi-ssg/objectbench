@@ -32,7 +32,7 @@ module CleversafeStorage
 
   def cleversafe_init
     if @vault.nil?
-      logger.info  "Null Init"
+      logger.info  "Cleversafe Init"
       @request=Cleversafe::Connection.new(ENV['OBJECTBENCH_CLEVERSAFE_ENDPOINT'],
                                           :user => ENV['OBJECTBENCH_CLEVERSAFE_USERNAME'],
                                           :password=>ENV['OBJECTBENCH_CLEVERSAFE_PASSWORD'] )

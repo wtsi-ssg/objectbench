@@ -10,6 +10,10 @@ task :delete_state => :environment  do
   Resque.redis.del "queue:job"
 end
 
+task :delete_resque_errors  => :environment  do
+  Resque::Failure.clear
+end
+
 task :wait_for_stable => :environment  do
   begin
     sleep 5

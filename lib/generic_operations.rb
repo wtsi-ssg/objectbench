@@ -1,4 +1,3 @@
-
 # -*- encoding : utf-8 -*-
 module GenericOperations
   include HttpHelper
@@ -35,7 +34,7 @@ module GenericOperations
   end
 
   def read_operation
-    logger.info  "SeekRead #{self.id}"
+    logger.info  "Read #{self.id}"
     download=Tempfile.new('objectbench', ENV['OBJECTBENCH_TMPDIR'] || '/tmp',:encoding => 'ascii-8bit')
     self.start_work
     case self.storage_type
@@ -50,20 +49,23 @@ module GenericOperations
     end
     self.stop_work
     download.close
-    if self.storage_type="Null_Storage"
+    if self.storage_type=="Null_Storage"
       download.unlink
       return
     end
+    logger.info "compare succeeded for (#{self.reference_file}, #{download.path} )"
     verified=FileUtils.compare_file(self.reference_file,download.path)
     if ! verified
       raise "File corruption error (#{self.reference_file}, #{download.path} )"
     else
       download.unlink
+      logger.info "compare succeeded for (#{self.reference_file}, #{download.path} )"
     end
 
   end
 
   def seek_read_operation
+    logger.info  "SeekRead #{self.id}"
     # First lets generate the file segment
     #
     segment=Tempfile.new('objectbench', ENV['OBJECTBENCH_TMPDIR'] || '/tmp',:encoding => 'ascii-8bit')
