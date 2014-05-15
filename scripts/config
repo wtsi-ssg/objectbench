@@ -3,7 +3,7 @@
 # when a new version is installed. It is here as a template for config_local
 # 
 # the location that the scripts run from
-export OBJECT_BENCH_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}"/.. )" && pwd )"
+export OBJECT_BENCH_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 #
 # Location that is used to hold files which are downloaded, the performance
 # of this space can limit the recorded performance of the object store 
@@ -45,4 +45,4 @@ export OBJECTBENCH_CLEVERSAFE_ENDPOINT="http://216.149.186.77/"
 [[ -s "$OBJECT_BENCH_HOME/config/config_local" ]] && . "$OBJECT_BENCH_HOME/config/config_local"
 
 # Bring the test library in to scope which has convience functions
-. $OBJECT_BENCH_HOME/config/library
+. $OBJECT_BENCH_HOME/scripts/library
