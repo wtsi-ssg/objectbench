@@ -1,3 +1,4 @@
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 # Generic config
 export OBJECTBENCH_TMPDIR="/local/scratch01/jb23/"
 export OBJECT_BENCH_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -24,7 +25,7 @@ export OBJECTBENCH_CLEVERSAFE_ENDPOINT="http://216.149.186.77/"
 
 # Override with local config
 # This allows us to publish an example config
-. $OBJECT_BENCH_HOME/config_local
+[[ -s "$OBJECT_BENCH_HOME/config_local" ]] && . "$OBJECT_BENCH_HOME/config_local"
 
 # Bring the test library in to scope which has convience functions
 . $OBJECT_BENCH_HOME/library
