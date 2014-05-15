@@ -1,0 +1,17 @@
+# Ensure we are using rvm
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+function two_phase_test {
+echo "Tagging tests as ${OBJECTBENCH_TAG}"
+cd $OBJECT_BENCH_HOME
+bundle exec rake add_initial_writes
+bundle exec rake wait_for_stable
+echo "Loading tests"
+bundle exec rake load_tests
+echo "Test Tagged as ${OBJECTBENCH_TAG}"
+bundle exec rake wait_for_stable
+echo "Checking once more"
+sleep 20 
+bundle exec rake wait_for_stable
+echo "Test Tagged as ${OBJECTBENCH_TAG}"
+}

@@ -1,0 +1,31 @@
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+# Generic config
+export OBJECTBENCH_TMPDIR="/local/scratch01/jb23/"
+export OBJECT_BENCH_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export OBJECTBENCH_DB_USER=objectbench
+export OBJECTBENCH_DB_PASS=objectbench
+export OBJECTBENCH_DB_HOST=172.22.3.217
+export OBJECTBENCH_REDIS_HOST=172.22.3.217
+export OBJECTBENCH_REDIS_PORT=6379
+export OBJECTBENCH_TAG="Test_run_$$"
+
+# Wos config
+export OBJECTBENCH_WOS_ENDPOINT="http://54.81.141.25/"
+export OBJECTBENCH_WOS_POLICY="******"
+
+# Null storage config
+export OBJECTBENCH_NULL_DRIVER_READ=629145600 
+export OBJECTBENCH_NULL_DRIVER_WRITE=629145600
+
+# Cleversafe config
+export OBJECTBENCH_CLEVERSAFE_USERNAME="JM042114"
+export OBJECTBENCH_CLEVERSAFE_PASSWORD="******"
+export OBJECTBENCH_CLEVERSAFE_VAULT="JM042114"
+export OBJECTBENCH_CLEVERSAFE_ENDPOINT="http://216.149.186.77/"
+
+# Override with local config
+# This allows us to publish an example config
+[[ -s "$OBJECT_BENCH_HOME/config_local" ]] && . "$OBJECT_BENCH_HOME/config_local"
+
+# Bring the test library in to scope which has convience functions
+. $OBJECT_BENCH_HOME/library

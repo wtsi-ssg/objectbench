@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Reference file:</strong>
+  <%= @job.reference_file %>
+</p>
+
+<p>
+  <strong>Md5sum:</strong>
+  <%= @job.md5sum %>
+</p>
+
+<p>
+  <strong>Operation:</strong>
+  <%= @job.operation %>
+</p>
+
+<p>
+  <strong>Storage type:</strong>
+  <%= @job.storage_type %>
+</p>
+
+<p>
+  <strong>Aasm state:</strong>
+  <%= @job.aasm_state %>
+</p>
+
+<%= link_to 'Edit', edit_job_path(@job) %> |
+<%= link_to 'Back', jobs_path %>
