@@ -77,7 +77,16 @@ module GenericOperations
     segment.close
     self.reference_file=segment.path
     self.save
-    self.read_operation
+    case self.storage_type
+    when "Null_Storage"
+      self.null_seek_read_operation
+    when "Wos"
+      self.wos_seek_read_operation
+    when "CleverSafe"
+      self.read_operation
+    else
+      raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
+    end
     # Restore the old reference.
     self.reference_file=filename
     self.save

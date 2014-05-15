@@ -1,4 +1,4 @@
 #!/bin/bash
- kill `ps -ef |grep resqu  | awk '{print $2}'`
+ kill `ps -ef |grep resqu  | awk '{print $2}'` &> /dev/null
 . "$( dirname "${BASH_SOURCE[0]}" )/config" 
 COUNT=64 QUEUE="*" bundle exec rake resque:workers

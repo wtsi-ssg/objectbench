@@ -42,7 +42,9 @@ export OBJECTBENCH_CLEVERSAFE_ENDPOINT="http://216.149.186.77/"
 
 # Override with local config
 # This allows us to publish an example config
-[[ -s "$OBJECT_BENCH_HOME/config/config_local" ]] && . "$OBJECT_BENCH_HOME/config/config_local"
+# SECRET_KEY_BASE should be over riden in config_local
+export SECRET_KEY_BASE=0aa9afaaed94b41b2e8356c3e149456dae97d3780e22d271bb46f9b2c5b189e8be9429c25f69371aafa9ec32e6e871747178175a518124d504df38d9466b775f
+[[ -s "$OBJECT_BENCH_HOME/scripts/config_local" ]] && . "$OBJECT_BENCH_HOME/scripts/config_local"
 
 # Bring the test library in to scope which has convience functions
 . $OBJECT_BENCH_HOME/scripts/library
