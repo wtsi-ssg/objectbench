@@ -10,15 +10,15 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  database: object_bench_dev
+  database: <%= ENV['OBJECTBENCH_DB_SCHEMA_DEV'] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *defaults
-  database: object_bench_test
+  database: <%= ENV['OBJECTBENCH_DB_SCHEMA_TEST'] %>
 
 production:
   <<: *defaults
-  database: object_bench_production
+  database: <%= ENV['OBJECTBENCH_DB_SCHEMA_PRODUCTION'] %>

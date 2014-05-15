@@ -1,5 +1,4 @@
 # Ensure we are using rvm
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
 function two_phase_test {
 echo "Tagging tests as ${OBJECTBENCH_TAG}"

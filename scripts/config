@@ -1,10 +1,27 @@
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
-# Generic config
+# This file is distributed with the software and will be overwrittern
+# when a new version is installed. It is here as a template for config_local
+# 
+# the location that the scripts run from
+export OBJECT_BENCH_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}"/.. )" && pwd )"
+#
+# Location that is used to hold files which are downloaded, the performance
+# of this space can limit the recorded performance of the object store 
+# under test.
+# 
 export OBJECTBENCH_TMPDIR="/local/scratch01/jb23/"
-export OBJECT_BENCH_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#
+# mysql config
+#
 export OBJECTBENCH_DB_USER=objectbench
 export OBJECTBENCH_DB_PASS=objectbench
 export OBJECTBENCH_DB_HOST=172.22.3.217
+export OBJECTBENCH_DB_SCHEMA_PRODUCTION=object_bench_production
+export OBJECTBENCH_DB_SCHEMA_TEST=object_bench_test
+export OBJECTBENCH_DB_SCHEMA_DEV=object_bench_dev
+#
+# Redis config
+#
 export OBJECTBENCH_REDIS_HOST=172.22.3.217
 export OBJECTBENCH_REDIS_PORT=6379
 export OBJECTBENCH_TAG="Test_run_$$"
@@ -25,7 +42,7 @@ export OBJECTBENCH_CLEVERSAFE_ENDPOINT="http://216.149.186.77/"
 
 # Override with local config
 # This allows us to publish an example config
-[[ -s "$OBJECT_BENCH_HOME/config_local" ]] && . "$OBJECT_BENCH_HOME/config_local"
+[[ -s "$OBJECT_BENCH_HOME/config/config_local" ]] && . "$OBJECT_BENCH_HOME/config/config_local"
 
 # Bring the test library in to scope which has convience functions
-. $OBJECT_BENCH_HOME/library
+. $OBJECT_BENCH_HOME/config/library
