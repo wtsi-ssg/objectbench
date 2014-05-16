@@ -1,5 +1,4 @@
 #!/bin/bash
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 export OBJECTBENCH_SYSTEM_UNDER_TEST="CleverSafe"
 . "$( dirname "${BASH_SOURCE[0]}" )/config" 
 setup_two_read_write_test

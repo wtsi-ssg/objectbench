@@ -1,9 +1,18 @@
 #!/bin/bash
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 export OBJECTBENCH_SYSTEM_UNDER_TEST="Wos"
 . "$( dirname "${BASH_SOURCE[0]}" )/config" 
 setup_two_read_write_test
 export OBJECTBENCH_INITAL_DISTRIBUTION="86, 103, 68, 113"
-export OBJECTBENCH_INITAL_FILES="/warehouse/isg_wh_scratch01/users/jb23/object_test/five_bytes  /warehouse/isg_wh_scratch01/users/jb23/object_test/11166_2#168.bai  /warehouse/isg_wh_scratch01/users/jb23/object_test/11128_8#0_phix.flagstat  /warehouse/isg_wh_scratch01/users/jb23/object_test/11330_1#19.bamcheck  /warehouse/isg_wh_scratch01/users/jb23/object_test/11304_1#86_phix_quality_error.txt  /warehouse/isg_wh_scratch01/users/jb23/object_test/11310_2#56_phix_quality_cycle_surv.txt  /warehouse/isg_wh_scratch01/users/jb23/object_test/6320_5.bai  /warehouse/isg_wh_scratch01/users/jb23/object_test/6244_1#9.bam  /warehouse/isg_wh_scratch01/users/jb23/object_test/6350_4#1.bam  /warehouse/isg_wh_scratch01/users/jb23/object_test/11149_5#12.cram  /warehouse/isg_wh_scratch01/users/jb23/object_test/7231_1#146.bam"
+export OBJECTBENCH_INITAL_FILES="${OB_D_BASE}/five_bytes \
+                                 ${OB_D_BASE}/11166_2#168.bai \
+                                 ${OB_D_BASE}/11128_8#0_phix.flagstat \
+                                 ${OB_D_BASE}/11330_1#19.bamcheck  \
+                                 ${OB_D_BASE}/11304_1#86_phix_quality_error.txt \
+                                 ${OB_D_BASE}/11310_2#56_phix_quality_cycle_surv.txt 
+                                 ${OB_D_BASE}/6320_5.bai \
+                                 ${OB_D_BASE}/6244_1#9.bam \
+                                 ${OB_D_BASE}/6350_4#1.bam \
+                                 ${OB_D_BASE}/11149_5#12.cram \
+                                 ${OB_D_BASE}/7231_1#146.bam"
 export OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION="600,400,0"
 two_phase_test
