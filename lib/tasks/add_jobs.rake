@@ -103,7 +103,7 @@ task :add_initial_writes => :environment  do
 end
 
 task :load_tests=> :environment  do
-  # We want all reads to be completed before now.
+  # We want all writes to be completed before now.
   timestamp=Time.now.to_f.to_s
   histogram_s=ENV['OBJECTBENCH_TEST_WRITE_DISTRIBUTION'] || "86, 103, 68, 113, 588, 405, 140, 29, 137, 117, 3"
   histogram=histogram_s.split(",").map { |s| s.to_i }
@@ -132,14 +132,14 @@ task :load_tests=> :environment  do
                             :length => length,
                             :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )
     when :read
-      object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag" )
+      object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG_READ'] || "Default_tag" )
       add_single_full_read_job(  :object_identifier=>object.object_identifier,
                                  :storage_type=>ENV['OBJECTBENCH_SYSTEM_UNDER_TEST'] || "Null_Storage",
                                  :length =>object.length,
                                  :file =>object.reference_file,
                                  :tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag"  )  
     when :partial_read
-      object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG'] || "Default_tag" )
+      object=object_to_read(:timestamp=>timestamp,:tag=>ENV['OBJECTBENCH_TAG_READ'] || "Default_tag" )
       length=object.length || 0
       size=rand(0..[length,16384].min)
       start=rand(0..[(length-size),0].max)

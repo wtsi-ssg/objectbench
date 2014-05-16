@@ -23,6 +23,7 @@ class Job < ActiveRecord::Base
   include AASM
   include GenericOperations
 
+  @redis = redis = Redis.new(:host =>ENV["OBJECTBENCH_REDIS_HOST"] , :port =>ENV["OBJECTBENCH_REDIS_PORT"] )
   @queue = :job
 
       aasm do
@@ -51,6 +52,7 @@ class Job < ActiveRecord::Base
 
   def self.perform(id)
      job=Job.find_by_id(id)
+     self.wait_until_floodgates_open
      case job.operation
       when "Write"
         job.write_operation
@@ -63,4 +65,22 @@ class Job < ActiveRecord::Base
      end
   end
 
+  def self.open_floodgate
+    @redis.set(:floodgate, "open")
+  end
+
+  def self.close_floodgate
+    @redis.set(:floodgate, "closed")
+  end
+
+  def self.floodgate
+    return @redis.get(:floodgate)
+  end
+
+  def self.wait_until_floodgates_open
+    while @redis.get(:floodgate) == "closed"
+      sleep 1
+    end
+  end
 end
+

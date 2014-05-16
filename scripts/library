@@ -1,16 +1,25 @@
 # Ensure we are using rvm
 
 function two_phase_test {
+export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_bulk_write_$$"
 echo "Tagging tests as ${OBJECTBENCH_TAG}"
 cd $OBJECT_BENCH_HOME
+echo closing floodgates
+rake close_floodgate
 bundle exec rake add_initial_writes
+echo opening floodgates
+rake open_floodgate
 bundle exec rake wait_for_stable
 echo "Loading tests"
+echo closing floodgates
+rake close_floodgate
+# Reads should come from the run we have just completed.
+export OBJECTBENCH_TAG_READ=${OBJECTBENCH_TAG}
+export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_phase_two_$$"
 bundle exec rake load_tests
+echo opening floodgates
+rake open_floodgate
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
-bundle exec rake wait_for_stable
-echo "Checking once more"
-sleep 20 
 bundle exec rake wait_for_stable
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
 }
