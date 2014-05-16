@@ -17,6 +17,8 @@ task :display_report => :environment  do
     #puts "duration #{duration} ,id #{task.id},length #{size}"
     bytes_per_second[task.id]=size/duration
   end
+  # Print header
+  puts "tag,start_time,end_time,operation,IOPB,bytes"
   while start_sample < end_time do
     ["Read","Write","SeekRead"].each do
       |operation| 
@@ -35,7 +37,7 @@ task :display_report => :environment  do
         duration=[task.work_ends.to_f,end_sample].min-[task.work_starts.to_f,start_sample].max
         bytes+=(bytes_per_second[task.id]*duration)
       end 
-      puts "#{start_sample},#{end_sample},#{operation},#{work_to_consider.size},#{bytes.to_i}"
+      puts "#{tag},#{start_sample},#{end_sample},#{operation},#{work_to_consider.size},#{bytes.to_i}"
     end 
     start_sample+=interval
     end_sample+=interval
