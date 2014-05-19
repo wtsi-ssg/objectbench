@@ -4,7 +4,7 @@ task :display_report => :environment  do
   tag=ENV['OBJECTBENCH_TAG'] || "Default_tag" 
   interval_s=ENV['OBJECTBENCH_INTERVAL'] || "10"
   interval=interval_s.to_i
-  start_time=Job.where("tag='#{tag}'").minimum(:work_starts)
+  start_time=Job.where("tag='#{tag}'").minimum(:work_starts).to_f
   end_time=Job.where("tag='#{tag}'").maximum(:work_ends).to_f
   start_sample=start_time.to_i
   end_sample=start_sample+interval
@@ -21,8 +21,9 @@ task :display_report => :environment  do
   end
   # Print header
   puts "tag,start_time,end_time,operation,IOPB,bytes"
+  operations=Job.where("tag='#{tag}'").select(:operation).map(&:operation).uniq
   while start_sample < end_time do
-    ["Read","Write","SeekRead"].each do
+    operations.each do 
       |operation| 
       # Let us start to move the sliding window
       # the tag makes sure we are only looking at the right run.
