@@ -5,22 +5,22 @@ export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_bulk_write_$$"
 echo "Tagging tests as ${OBJECTBENCH_TAG}"
 cd $OBJECT_BENCH_HOME
 echo closing floodgates
-rake close_floodgate
-bundle exec rake add_initial_writes
+rake object_bench:close_floodgate
+bundle exec rake object_bench:add_initial_writes
 echo opening floodgates
-rake open_floodgate
-bundle exec rake wait_for_stable
+rake object_bench:open_floodgate
+bundle exec rake object_bench:wait_for_stable
 echo "Loading tests"
 echo closing floodgates
-rake close_floodgate
+rake object_bench:close_floodgate
 # Reads should come from the run we have just completed.
 export OBJECTBENCH_TAG_READ=${OBJECTBENCH_TAG}
 export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_phase_two_$$"
-bundle exec rake load_tests
+bundle exec rake object_bench:load_tests
 echo opening floodgates
-rake open_floodgate
+rake object_bench:open_floodgate
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
-bundle exec rake wait_for_stable
+bundle exec rake object_bench:wait_for_stable
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
 }
 

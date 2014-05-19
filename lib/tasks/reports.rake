@@ -1,3 +1,5 @@
+namespace :object_bench do
+desc "Ouputs a CSV, Define OBJECTBENCH_TAG to select the run to display, Define OBJECTBENCH_INTERVAL to override the default time interval sampled"
 task :display_report => :environment  do
   tag=ENV['OBJECTBENCH_TAG'] || "Default_tag" 
   interval_s=ENV['OBJECTBENCH_INTERVAL'] || "10"
@@ -42,4 +44,6 @@ task :display_report => :environment  do
     start_sample+=interval
     end_sample+=interval
   end
+end
+
 end

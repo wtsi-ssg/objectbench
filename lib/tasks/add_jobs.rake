@@ -1,3 +1,5 @@
+namespace :object_bench do
+
 def self.add_single_job_write (options={})
   job=Job.new(:operation =>"Write",
               :reference_file =>options[:file],
@@ -75,6 +77,7 @@ def self.choose_work(workload)
   end
 end
 
+desc "Write workload generator, these can be used later for the mixed/read test,uses OBJECTBENCH_INITAL_DISTRIBUTION,OBJECTBENCH_INITAL_FILES,OBJECTBENCH_SYSTEM_UNDER_TEST,OBJECTBENCH_TAG"
 task :add_initial_writes => :environment  do
   # Original histogram from irods storage
   # 7500,9000,6000,9898,51247,35313,12200,2536,11923,10232,267
@@ -102,6 +105,7 @@ task :add_initial_writes => :environment  do
   end
 end
 
+desc "Mixed workload generator,uses OBJECTBENCH_TEST_WRITE_DISTRIBUTION,OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION,OBJECTBENCH_INITAL_FILES,OBJECTBENCH_SYSTEM_UNDER_TEST,OBJECTBENCH_TAG,OBJECTBENCH_TAG_READ"
 task :load_tests=> :environment  do
   # We want all writes to be completed before now.
   timestamp=Time.now.to_f.to_s
@@ -153,3 +157,4 @@ task :load_tests=> :environment  do
     end
   end
 end 
+end
