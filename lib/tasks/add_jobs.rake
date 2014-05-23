@@ -79,6 +79,11 @@ end
 
 desc "Write workload generator, these can be used later for the mixed/read test,uses OBJECTBENCH_INITAL_DISTRIBUTION,OBJECTBENCH_INITAL_FILES,OBJECTBENCH_SYSTEM_UNDER_TEST,OBJECTBENCH_TAG"
 task :add_initial_writes => :environment  do
+  if ! ENV['OBJECTBENCH_SEED'].nil?
+     srand  ENV['OBJECTBENCH_SEED'].to_i
+  else
+     srand
+  end
   # Original histogram from irods storage
   # 7500,9000,6000,9898,51247,35313,12200,2536,11923,10232,267
   histogram=ENV['OBJECTBENCH_INITAL_DISTRIBUTION'] || "86, 103, 68, 113, 588, 405, 140, 29, 137, 117, 3" 
@@ -108,6 +113,11 @@ end
 desc "Mixed workload generator,uses OBJECTBENCH_TEST_WRITE_DISTRIBUTION,OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION,OBJECTBENCH_INITAL_FILES,OBJECTBENCH_SYSTEM_UNDER_TEST,OBJECTBENCH_TAG,OBJECTBENCH_TAG_READ"
 task :load_tests=> :environment  do
   # We want all writes to be completed before now.
+  if ! ENV['OBJECTBENCH_SEED'].nil?
+    srand  ENV['OBJECTBENCH_SEED'].to_i
+  else
+    srand
+  end
   timestamp=Time.now.to_f.to_s
   histogram_s=ENV['OBJECTBENCH_TEST_WRITE_DISTRIBUTION'] || "86, 103, 68, 113, 588, 405, 140, 29, 137, 117, 3"
   histogram=histogram_s.split(",").map { |s| s.to_i }
