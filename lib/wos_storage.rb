@@ -16,6 +16,11 @@ module WosStorage
   def wos_read_operation(download)
     wos_init
     @http_get.headers["x-ddn-oid"]=self.object_identifier;
+    old_on_body = @http_get.on_body do |data|
+                         result = old_on_body ?  old_on_body.call(data) : data.length
+                         download << data if result == data.length
+                         result
+                  end
     @http_get.perform
     if @http_get.header_str.nil? then
        raise "Wos system error perform failed."
@@ -24,7 +29,7 @@ module WosStorage
     if headers["x-ddn-status"]!="0 ok" then
        raise "Wos system error #{JSON.pretty_generate(headers)}"
     end
-    download.write(@http_get.body_str)
+    
   end
 
   def wos_seek_read_operation
