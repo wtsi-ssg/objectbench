@@ -3,6 +3,24 @@ require 'json'
 module WosStorage
 
   def wos_write_operation
+    # After lots of swearing, the fact that the wos does not support
+    # mutlipart uploads defeats me, I take refuge in the idea that
+    # doing the right thing the majority of the time is good enough
+    # 268435456 is 2GB in bytes btw
+    if self.length > (ENV['OBJECTBENCH_WOS_MAX_IN_MEM'] || 268435456 ) then
+      cmd ="curl   --noproxy '*' -X POST --data-binary @#{self.reference_file} -H x-ddn-policy:#{ENV['OBJECTBENCH_WOS_POLICY']} #{ENV['OBJECTBENCH_WOS_ENDPOINT']}cmd/put  -v 2>&1  | sed -n 's/< x-ddn-oid: //p'"
+      logger.info "Large file $cmd"
+      run= IO.popen(cmd)
+      ident=run.readlines[0] 
+      if ident == "" then
+        raise "Large wos write failed"
+      end
+      # this gives us for example
+      # "MCNB2oifBiGYrlCRLc-lRlvZuIi_ORa3F6sMCfBE\r\n"
+      self.object_identifier=ident
+      self.save
+      return ;
+    end
     wos_init
     @http_put.post(File.read(self.reference_file))
     headers=parse_headers(@http_put.header_str)
