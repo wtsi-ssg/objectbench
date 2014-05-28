@@ -22,7 +22,12 @@ desc "Display resque errors"
 task :display_resque_errors =>  :environment  do
   Resque::Failure.all(0,Resque::Failure.count).each { |work|
      job=Job.find_by_id(work['payload']['args'][0])
-     puts "#{work["exception"]}, #{work["backtrace"]}, #{work["worker"]}, #{job.reference_file}, #{job.operation}, #{job.object_identifier}, #{job.length}"
+     if job.object_identifier.nil? then
+       ident=""
+     else
+       ident=job.object_identifier.chop
+     end
+     puts "#{work["exception"]}, #{work["backtrace"]}, #{work["worker"]}, #{job.reference_file}, #{job.operation}, #{ident}, #{job.length}"
      }
 end
 
