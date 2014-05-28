@@ -18,6 +18,14 @@ task :delete_resque_errors  => :environment  do
   Resque::Failure.clear
 end
 
+desc "Display resque errors"
+task :display_resque_errors =>  :environment  do
+  Resque::Failure.all(0,Resque::Failure.count).each { |work|
+     job=Job.find_by_id(work['payload']['args'][0])
+     puts "#{work["exception"]}, #{work["backtrace"]}, #{work["worker"]}, #{job.reference_file}, #{job.operation}, #{job.object_identifier}, #{job.length}"
+     }
+end
+
 desc "Wait until there are no jobs waiting, not errors and no jobs running"
 task :wait_for_stable => :environment  do
   begin
