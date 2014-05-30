@@ -18,6 +18,11 @@ task :delete_resque_errors  => :environment  do
   Resque::Failure.clear
 end
 
+desc "Clear Phantom workers"
+task :delete_phantom_workers   => :environment  do
+  Resque.workers.select{|worker| worker.id.split(':').first==ENV['PHANTOM_HOST']}.each(&:unregister_worker)
+end
+
 desc "Display resque errors"
 task :display_resque_errors =>  :environment  do
   Resque::Failure.all(0,Resque::Failure.count).each { |work|
