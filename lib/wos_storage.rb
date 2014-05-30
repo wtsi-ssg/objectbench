@@ -13,7 +13,7 @@ module WosStorage
       run= IO.popen(cmd)
       ident=run.readlines[0] 
       if ident == "" then
-        raise "Large wos write failed"
+        raise "Large wos write failed, #{Time.now.to_f}"
       end
       # this gives us for example
       # "MCNB2oifBiGYrlCRLc-lRlvZuIi_ORa3F6sMCfBE\r\n"
@@ -27,7 +27,7 @@ module WosStorage
     self.object_identifier=headers["x-ddn-oid"]
     self.save
     if headers["x-ddn-status"]!="0 ok" then
-      raise "Wos system error #{JSON.pretty_generate(headers)}"
+      raise "Wos system error , #{Time.now.to_f},#{JSON.pretty_generate(headers)}"
     end
   end
 
@@ -41,17 +41,17 @@ module WosStorage
                   end
     @http_get.perform
     if @http_get.header_str.nil? then
-       raise "Wos system error perform failed."
+       raise "Wos system error perform failed, #{Time.now.to_f}"
     end
     headers=parse_headers(@http_get.header_str)
     if headers["x-ddn-status"]!="0 ok" then
-       raise "Wos system error #{JSON.pretty_generate(headers)}"
+       raise "Wos system error, #{Time.now.to_f}, #{JSON.pretty_generate(headers)}"
     end
     
   end
 
   def wos_seek_read_operation
-    raise "wos_seek_read_operation not implemented"
+    raise "wos_seek_read_operation not implemented, #{Time.now.to_f}"
   end
 
   def wos_init
