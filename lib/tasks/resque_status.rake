@@ -27,7 +27,7 @@ task :display_resque_errors =>  :environment  do
      else
        ident=job.object_identifier.chop
      end
-     puts "#{work["exception"]}, #{work["backtrace"]}, #{work["worker"]}, #{job.reference_file}, #{job.operation}, #{ident}, #{job.length} #{job.start_time}"
+     puts "#{work["exception"]}, #{work["backtrace"]}, #{work["worker"]}, #{work["error"].gsub!(/\n/,' ')},  #{work['payload']['args'][0]}, #{job.reference_file}, #{job.operation}, #{ident}, #{job.length}, #{job.work_starts}"
      }
 end
 
