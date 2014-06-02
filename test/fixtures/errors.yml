@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  exception: MyText
+  backtrace: MyText
+  worker: MyString
+  error: MyText
+  reported_at: MyString
+  job_id: 
+
+two:
+  exception: MyText
+  backtrace: MyText
+  worker: MyString
+  error: MyText
+  reported_at: MyString
+  job_id: 

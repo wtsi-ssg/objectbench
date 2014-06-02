@@ -1,3 +1,5 @@
+require 'date'
+
 namespace :object_bench do
 desc "Displays resque status"
 task :resque_status => :environment  do
@@ -23,6 +25,19 @@ task :delete_phantom_workers   => :environment  do
   Resque.workers.select{|worker| worker.id.split(':').first==ENV['PHANTOM_HOST']}.each(&:unregister_worker)
 end
 
+desc "Persist resque errors"
+task :persist_resque_errors =>  :environment  do  
+    Resque::Failure.all(0,Resque::Failure.count).each { |work|
+      next if work['payload']['args'][0].nil?
+      job=Job.find_by_id(work['payload']['args'][0])
+      error=Error.create(  :exception=> work["exception"] , :reported_at => DateTime.parse(work['failed_at']).strftime('%s') , :backtrace => work["backtrace"], :worker=> work["worker"] , :error => work["error"] ,  :job_id=>job.id )
+      error.save
+      job.error=error
+      job.save
+    }
+end
+
+
 desc "Display resque errors"
 task :display_resque_errors =>  :environment  do
   Resque::Failure.all(0,Resque::Failure.count).each { |work|
@@ -32,7 +47,7 @@ task :display_resque_errors =>  :environment  do
      else
        ident=job.object_identifier.chop
      end
-     puts "#{work["exception"]}, #{work["backtrace"]}, #{work["worker"]}, #{work["error"].gsub!(/\n/,' ')},  #{work['payload']['args'][0]}, #{job.reference_file}, #{job.operation}, #{ident}, #{job.length}, #{job.work_starts}"
+     puts "#{work['failed_at']}, #{work["exception"]},  #{work["error"].gsub!(/\n/,' ')}, #{work["backtrace"]}, #{work["worker"]}, #{work['payload']['args'][0]}, #{job.reference_file}, #{job.operation}, #{ident}, #{job.length}, #{job.work_starts}"
      }
 end
 

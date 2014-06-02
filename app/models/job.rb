@@ -20,6 +20,7 @@
 #
 
 class Job < ActiveRecord::Base
+  has_one :error
   include AASM
   include GenericOperations
 
