@@ -32,11 +32,10 @@ task :persist_resque_errors =>  :environment  do
       job=Job.find_by_id(work['payload']['args'][0])
       error=Error.create(  :exception=> work["exception"] , :reported_at => DateTime.parse(work['failed_at']).strftime('%s') , :backtrace => work["backtrace"], :worker=> work["worker"] , :error => work["error"] ,  :job_id=>job.id )
       error.save
-      job.error=error
+      job.error_id=error.id
       job.save
     }
 end
-
 
 desc "Display resque errors"
 task :display_resque_errors =>  :environment  do
