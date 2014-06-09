@@ -1,9 +1,13 @@
 # Ensure we are using rvm
 
 function two_phase_test {
+cd $OBJECT_BENCH_HOME
+echo "Persting errors to database"
+bundle exec rake object_bench:persist_resque_errors
+echo "clearing errors"
+bundle exec rake object_bench:delete_resque_errors
 export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_bulk_write_$$"
 echo "Tagging tests as ${OBJECTBENCH_TAG}"
-cd $OBJECT_BENCH_HOME
 echo closing floodgates
 rake object_bench:close_floodgate
 bundle exec rake object_bench:add_initial_writes
@@ -21,6 +25,8 @@ echo opening floodgates
 rake object_bench:open_floodgate
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
 bundle exec rake object_bench:wait_for_stable
+echo "Persting errors to database"
+bundle exec rake object_bench:persist_resque_errors
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
 }
 

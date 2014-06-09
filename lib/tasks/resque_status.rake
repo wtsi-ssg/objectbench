@@ -13,6 +13,12 @@ task :delete_state => :environment  do
   Job.delete_all
   Resque::Failure.clear
   Resque.redis.del "queue:job"
+  Resque.redis.del "queue:job_huge"
+  Resque.redis.del "queue:job_large"
+  Resque.redis.del "queue:job_medium"
+  Resque.redis.del "queue:job_small"
+  Resque.redis.del "queue:job_tiny"
+  Resque.redis.del "queue:failed"
 end
 
 desc "CLear the resque errors"
@@ -56,10 +62,14 @@ task :wait_for_stable => :environment  do
     sleep 5
     working= Resque.info[:working]
     errors = Resque.info[:failed]
-    jobs   = Resque.size("job")
     floodgate = Job.floodgate
-    puts "Jobs #{jobs}:Errors #{errors}:Working #{working}:Floodgate #{floodgate}"
-  end while ( errors !=0 || jobs !=0 || working != 0 )
+    jobs=0
+    Resque.queues.each { |queue| 
+      print "#{queue} #{Resque.size(queue)}:"
+      jobs=jobs+Resque.size(queue)
+    }
+    puts "Errors #{errors}:Working #{working}:Floodgate #{floodgate}"
+  end while (  jobs !=0 || working != 0 )
 end
 
 desc "Open the floodgates to that jobs which were waiting to start can, the tiem for the job does not include the waiting time"

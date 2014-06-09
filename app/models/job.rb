@@ -53,7 +53,7 @@ class Job < ActiveRecord::Base
 
   def self.perform(id)
      job=Job.find_by_id(id)
-     self.wait_until_floodgates_open
+     wait_until_floodgates_open
      case job.operation
       when "Write"
         job.write_operation
