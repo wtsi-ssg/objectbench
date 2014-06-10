@@ -6,7 +6,7 @@ echo "Persting errors to database"
 bundle exec rake object_bench:persist_resque_errors
 echo "clearing errors"
 bundle exec rake object_bench:delete_resque_errors
-export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_bulk_write_$$"
+export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_bulk_write_$$_${OBJECTBENCH_RUN_NAME}"
 echo "Tagging tests as ${OBJECTBENCH_TAG}"
 echo closing floodgates
 rake object_bench:close_floodgate
@@ -19,7 +19,7 @@ echo closing floodgates
 rake object_bench:close_floodgate
 # Reads should come from the run we have just completed.
 export OBJECTBENCH_TAG_READ=${OBJECTBENCH_TAG}
-export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_phase_two_$$"
+export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_phase_two_$$_${OBJECTBENCH_RUN_NAME}"
 bundle exec rake object_bench:load_tests
 echo opening floodgates
 rake object_bench:open_floodgate
