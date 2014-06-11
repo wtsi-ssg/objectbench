@@ -4,6 +4,7 @@ module GenericOperations
   include NullStorage
   include CleversafeStorage
   include WosStorage
+  include IrodsStorage
 
   def start_work
     self.work_starts=Time.now.to_f.to_s
@@ -27,6 +28,8 @@ module GenericOperations
       self.wos_write_operation
     when "CleverSafe"
       self.cleversafe_write_operation
+    when "Irods"
+      self.irods_write_operation
     else
       raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
@@ -44,6 +47,8 @@ module GenericOperations
       self.wos_read_operation(download)
     when "CleverSafe"
       self.cleversafe_read_operation(download)
+    when "Irods"
+      self.irods_read_operation(download)
     else
       raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
@@ -85,6 +90,8 @@ module GenericOperations
       self.wos_seek_read_operation
     when "CleverSafe"
       self.read_operation
+    when "Irods"
+      self.irods_seek_read_operation
     else
       raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
@@ -104,6 +111,8 @@ module GenericOperations
       self.wos_init
     when "CleverSafe"
       self.cleversafe_init
+    when "Irods"
+      self.irods_init
     else
       raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
