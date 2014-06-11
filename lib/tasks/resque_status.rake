@@ -32,14 +32,38 @@ task :delete_phantom_workers   => :environment  do
 end
 
 desc "Persist resque errors"
-task :persist_resque_errors =>  :environment  do  
+task :persist_resque_errors =>  :environment  do
+   persist_resque_errors
+end
+
+def persist_resque_errors(resubmit_job = :false )
     Resque::Failure.all(0,Resque::Failure.count).each { |work|
       next if work['payload']['args'][0].nil?
       job=Job.find_by_id(work['payload']['args'][0])
-      error=Error.create(  :exception=> work["exception"] , :reported_at => DateTime.parse(work['failed_at']).strftime('%s') , :backtrace => work["backtrace"], :worker=> work["worker"] , :error => work["error"] ,  :job_id=>job.id )
-      error.save
-      job.error_id=error.id
-      job.save
+      if job.error_id.nil? then
+        error=Error.create(  :exception=> work["exception"] , :reported_at => DateTime.parse(work['failed_at']).strftime('%s') , :backtrace => work["backtrace"], :worker=> work["worker"] , :error => work["error"] ,  :job_id=>job.id )
+        error.save
+        if resubmit_job then
+          # We don't use dup as it will copy the ASSM state
+          # And we don't just resubmit the redis job as what would we
+          # do if the new job failed we would have nowhere to record
+          # the new error as the slot would have been taken.
+            new_job=Job.new(:operation =>job.operation,
+                            :length => job.length,
+                            :reference_file =>job.reference_file,
+                            :size =>job.size,
+                            :start =>job.start,
+                            :storage_type=>job.storage_type,
+                            :object_identifier=>job.object_identifier,
+                            :tag =>job.tag )
+           new_job.save
+           self.enqueue(new_job)
+           puts "New job id is #{new_job.id} old is #{job.id}"
+           Resque::Failure.remove(work)
+        end
+        job.error_id=error.id
+        job.save
+      end
     }
 end
 
@@ -69,6 +93,13 @@ task :wait_for_stable => :environment  do
       jobs=jobs+Resque.size(queue)
     }
     puts "Errors #{errors}:Working #{working}:Floodgate #{floodgate}"
+    if ENV['OBJECT_BENCH_REQUE_ON_FAILURE'] == "true"  && errors > 0 then
+      # Hack to ensure we do not finish too early
+      job=1
+      puts "Flushing errors" 
+      persist_resque_errors(resubmit_job = :true ) 
+    end
+
   end while (  jobs !=0 || working != 0 )
 end
 

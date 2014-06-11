@@ -20,7 +20,7 @@ task :display_report => :environment  do
     bytes_per_second[task.id]=size/duration
   end
   # Print header
-  puts "tag,start_time,end_time,operation,errors,IOPB,bytes"
+  puts "tag,start_time,end_time,operation,errors,IOPB,bytes,duration"
   operations=Job.where("tag='#{tag}'").select(:operation).map(&:operation).uniq
   # find the relevant errors
   while start_sample < end_time do
@@ -37,6 +37,7 @@ task :display_report => :environment  do
       # Now some fun for each chunk of work we need to calculate the amount of bytes moved per second for the task
       # Later we can multiple this by how long the task was running in the window
       bytes=0
+      total_duration=0
       work_to_consider.each do |task|
         if task.work_ends.nil?
           raise "Panic no end time recorded"
@@ -45,6 +46,7 @@ task :display_report => :environment  do
           raise "Panic no start time recorded"
         end
         duration=[task.work_ends.to_f,end_sample].min - [task.work_starts.to_f,start_sample].max
+        total_duration=total_duration+duration
         if task.work_ends.to_f < end_sample and task.work_starts.to_f > start_sample 
           bytes+=task.length||task.size
         else
@@ -60,7 +62,7 @@ task :display_report => :environment  do
           number_of_errrors=number_of_errrors+1
         end
       end
-      puts "#{tag},#{start_sample},#{end_sample},#{operation},#{number_of_errrors},#{work_to_consider.size},#{bytes.to_i}"
+      puts "#{tag},#{start_sample},#{end_sample},#{operation},#{number_of_errrors},#{work_to_consider.size},#{bytes.to_i},#{total_duration}"
     end 
     start_sample+=interval
     end_sample+=interval

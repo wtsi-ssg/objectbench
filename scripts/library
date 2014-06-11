@@ -3,7 +3,7 @@
 function two_phase_test {
 cd $OBJECT_BENCH_HOME
 echo "Persting errors to database"
-bundle exec rake object_bench:persist_resque_errors
+OBJECT_BENCH_REQUE_ON_FAILURE="false" bundle exec rake object_bench:persist_resque_errors
 echo "clearing errors"
 bundle exec rake object_bench:delete_resque_errors
 export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_bulk_write_$$_${OBJECTBENCH_RUN_NAME}"
@@ -26,7 +26,7 @@ rake object_bench:open_floodgate
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
 bundle exec rake object_bench:wait_for_stable
 echo "Persting errors to database"
-bundle exec rake object_bench:persist_resque_errors
+#bundle exec rake object_bench:persist_resque_errors
 echo "Test Tagged as ${OBJECTBENCH_TAG}"
 }
 
@@ -61,4 +61,6 @@ export OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION="600,300,100"
 # This is the default tag of the run hopefully with the name of the subject 
 # included.
 export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_$$"
+# If a job fails then create a new job like the one that died.
+export OBJECT_BENCH_REQUE_ON_FAILURE="true"
  }
