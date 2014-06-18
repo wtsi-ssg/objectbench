@@ -10,7 +10,7 @@ end
 
 desc "Deletes all jobs, clears the errors and clears any pending jobs"
 task :delete_state => :environment  do
-  Job.delete_all
+#  Job.delete_all
   Resque::Failure.clear
   Resque.redis.del "queue:job"
   Resque.redis.del "queue:job_huge"
@@ -38,7 +38,12 @@ end
 
 def persist_resque_errors(resubmit_job = :false )
     Resque::Failure.all(0,Resque::Failure.count).each { |work|
-      next if work['payload']['args'][0].nil?
+      begin
+        next if work['payload']['args'][0].nil?
+      rescue 
+        logger.error "Fetch error #{work.attributes.inspect}"
+        next
+      end
       job=Job.find_by_id(work['payload']['args'][0])
       if job.error_id.nil? then
         error=Error.create(  :exception=> work["exception"] , :reported_at => DateTime.parse(work['failed_at']).strftime('%s') , :backtrace => work["backtrace"], :worker=> work["worker"] , :error => work["error"] ,  :job_id=>job.id )
@@ -58,7 +63,6 @@ def persist_resque_errors(resubmit_job = :false )
                             :tag =>job.tag )
            new_job.save
            self.enqueue(new_job)
-           puts "New job id is #{new_job.id} old is #{job.id}"
            Resque::Failure.remove(work)
         end
         job.error_id=error.id

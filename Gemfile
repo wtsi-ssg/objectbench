@@ -40,4 +40,3 @@ gem 'cleversafe'
 
 # Lets try libcurl
 gem 'curb'
-

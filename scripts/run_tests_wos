@@ -14,5 +14,5 @@ export OBJECTBENCH_INITAL_FILES="${OB_D_BASE}/five_bytes \
                                  ${OB_D_BASE}/6350_4#1.bam \
                                  ${OB_D_BASE}/11149_5#12.cram \
                                  ${OB_D_BASE}/7231_1#146.bam"
-export OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION="60000,40000,0"
+export OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION="3000,2000,0"
 two_phase_test
