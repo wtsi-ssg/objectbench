@@ -63,7 +63,7 @@ end
 def self.object_to_read(options={})
   timestamp=options[:timestamp] || Time.now.to_f.to_s
   tag=options[:tag]|| "Default_tag"
-  jobs=Job.where( "work_ends < '#{timestamp}' and tag='#{tag}'" )
+  jobs=Job.where( "work_ends < '#{timestamp}' and tag='#{tag}' and  object_identifier IS NOT NULL" )
   if jobs.nil? 
     raise "No objects to read 'work_ends < #{timestamp}' and tag='#{tag}'"
   end

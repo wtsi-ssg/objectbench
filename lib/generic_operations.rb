@@ -33,6 +33,9 @@ module GenericOperations
     else
       raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
+    if self.object_identifier.nil? 
+      raise "No object_identifier recorded"
+    end
     self.stop_work
   end
 
