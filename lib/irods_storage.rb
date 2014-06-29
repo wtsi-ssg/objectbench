@@ -8,7 +8,7 @@ module IrodsStorage
     output=run.readlines
     if !output.empty? 
        logger.info "Result #{run.readlines}"
-       raise "Irods error #{cmd} #{output}"
+       self.resubmit_error( error: 'No output' , exception_message: 'Cmd_failed' )
     end
   end
 

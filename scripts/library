@@ -95,7 +95,9 @@ bundle exec rake object_bench:delete_resque_errors
 
 function write_errors {
 echo "Fetching results"
-rake object_bench:display_report > $OBJECTBENCH_RESULTS/results_${OBJECTBENCH_TAG}
+bundle exec rake object_bench:display_report > $OBJECTBENCH_RESULTS/results_${OBJECTBENCH_TAG}
 echo "Fetching errors"
-rake object_bench:display_historic_errors > $OBJECTBENCH_RESULTS/errors_${OBJECTBENCH_TAG}
+bundle exec rake object_bench:display_historic_errors > $OBJECTBENCH_RESULTS/errors_${OBJECTBENCH_TAG}
+echo "Fetching stats"
+bundle exec rake object_bench:stats_report > $OBJECTBENCH_RESULTS/stats_${OBJECTBENCH_TAG}
 }

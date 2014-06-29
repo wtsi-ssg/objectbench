@@ -1,10 +1,62 @@
 # -*- encoding : utf-8 -*-
 module GenericOperations
+  require 'socket'
   include HttpHelper
   include NullStorage
   include CleversafeStorage
   include WosStorage
   include IrodsStorage
+
+  def enqueue(job)
+    size=job.length||job.size
+    if (size < 10000 )
+      # less than 10K
+      Resque.enqueue(Job_Tiny,job.id)
+      return
+    end
+    if (size < 1000000 )
+      #Less than 1M
+      Resque.enqueue(Job_Small,job.id)
+      return
+    end 
+   if (size < 100000000 )
+     #Less than 100M
+     Resque.enqueue(Job_Medium,job.id)
+     return
+   end
+   if (size < 1000000000 )
+     #Less than 1G
+     Resque.enqueue(Job_Large,job.id)
+     return
+   end  
+   Resque.enqueue(Job_Huge,job.id)
+  end
+
+
+  def resubmit_error (exception_message: 'undefined_exception' , error: 'Undefined_error')
+    if self.error_id.nil? then
+     error=Error.create(  :exception=> exception_message , :reported_at => Time.now.to_f.to_s , :backtrace => caller(), :worker=> Socket.gethostname , :error => error ,  :job_id=>self.id )
+     error.save
+     # We don't use dup as it will copy the ASSM state
+     # And we don't just resubmit the redis job as what would we
+     # do if the new job failed we would have nowhere to record
+     # the new error as the slot would have been taken.
+     new_job=Job.new(:operation => self.operation,
+                     :length => self.length,
+                     :reference_file => self.reference_file,
+                     :size => self.size,
+                     :start => self.start,
+                     :storage_type=> self.storage_type,
+                     :object_identifier=> self.object_identifier,
+                     :tag => self.tag )
+     new_job.save
+     self.enqueue(new_job)
+     #self.work_error
+     self.work_ends=Time.now.to_f.to_s
+     self.error_id=error.id
+     self.save
+    end
+  end
 
   def start_work
     self.work_starts=Time.now.to_f.to_s
@@ -34,7 +86,7 @@ module GenericOperations
       raise "Unknown storage type: #{self.storage_type}, jobid #{self.id}"
     end
     if self.object_identifier.nil? 
-      raise "No object_identifier recorded"
+      self.resubmit_error( error: 'No object_identifier recorded' , exception_message: 'Write_failed' )
     end
     self.stop_work
   end
@@ -61,10 +113,19 @@ module GenericOperations
       download.unlink
       return
     end
-    logger.info "compare succeeded for (#{self.reference_file}, #{download.path} )"
     verified=FileUtils.compare_file(self.reference_file,download.path)
     if ! verified
-      raise "File corruption error (#{self.reference_file}, #{download.path} )"
+       if File.size(download.path) == 0 then
+         # If it was supposed to be zero length then 
+         # the compare would have not failed.
+         self.resubmit_error( error: "Zero Length file (#{self.reference_file})" , exception_message: 'Read_failed' ) ;
+       else
+         self.resubmit_error( error: "File corruption error (#{self.reference_file}- #{download.path} )" , exception_message: 'Read_failed' )
+       end
+       if ENV['OBJECTBENCH_KEEP_BROKEN'] != 'TRUE'
+          download.unlink
+       end
+       return 
     else
       download.unlink
       logger.info "compare succeeded for (#{self.reference_file}, #{download.path} )"

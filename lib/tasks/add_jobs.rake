@@ -1,32 +1,5 @@
 namespace :object_bench do
 
-  def self.enqueue(job)
-    size=job.length||job.size
-    if (size < 10000 )
-      # less than 10K
-      Resque.enqueue(Job_Tiny,job.id)
-      return
-    end
-    if (size < 1000000 )
-      #Less than 1M
-      Resque.enqueue(Job_Small,job.id)
-      return
-    end 
-   if (size < 100000000 )
-     #Less than 100M
-     Resque.enqueue(Job_Medium,job.id)
-     return
-   end
-   if (size < 1000000000 )
-     #Less than 1G
-     Resque.enqueue(Job_Large,job.id)
-     return
-   end  
-   Resque.enqueue(Job_Huge,job.id)
-  end
-
-
-
 def self.add_single_job_write (options={})
   job=Job.new(:operation =>"Write",
               :reference_file =>options[:file],
@@ -34,7 +7,7 @@ def self.add_single_job_write (options={})
               :length =>options[:length],  
               :tag =>options[:tag], )
   job.save
-  self.enqueue(job)
+  job.enqueue(job)
 end
 
 def self.add_single_full_read_job(options={})
@@ -45,7 +18,7 @@ def self.add_single_full_read_job(options={})
               :object_identifier=>options[:object_identifier],
               :tag =>options[:tag], )
   job.save
-  self.enqueue(job)
+  job.enqueue(job)
 end
 
 def self.add_single_partial_read_job(options={})
@@ -57,7 +30,7 @@ def self.add_single_partial_read_job(options={})
               :object_identifier=>options[:object_identifier],
               :tag =>options[:tag], )
   job.save
-  self.enqueue(job)
+  job.enqueue(job)
 end
 
 def self.object_to_read(options={})

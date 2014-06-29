@@ -9,11 +9,11 @@ module WosStorage
     # 268435456 is 2GB in bytes btw
     if self.length > (ENV['OBJECTBENCH_WOS_MAX_IN_MEM'] || 268435456 ) then
       cmd ="curl   --noproxy '*' -X POST --data-binary @#{self.reference_file} -H x-ddn-policy:#{ENV['OBJECTBENCH_WOS_POLICY']} #{ENV['OBJECTBENCH_WOS_ENDPOINT']}cmd/put  -v 2>&1  | sed -n 's/< x-ddn-oid: //p'"
-      logger.info "Large file $cmd"
+      logger.info "Large file #{cmd}"
       run= IO.popen(cmd)
       ident=run.readlines[0] 
       if ident == "" then
-        raise "Large wos write failed, #{Time.now.to_f}"
+        self.resubmit_error( error: "Large wos write failed, #{Time.now.to_f}" , exception_message: 'Write_failed' )
       end
       # this gives us for example
       # "MCNB2oifBiGYrlCRLc-lRlvZuIi_ORa3F6sMCfBE\r\n"
@@ -27,7 +27,7 @@ module WosStorage
     self.object_identifier=headers["x-ddn-oid"]
     self.save
     if headers["x-ddn-status"]!="0 ok" then
-      raise "Wos system error , #{Time.now.to_f},#{JSON.pretty_generate(headers)}"
+      self.resubmit_error( error: "Wos system error , #{Time.now.to_f},#{JSON.pretty_generate(headers)}" , exception_message: 'Write_failed' )
     end
   end
 
@@ -41,13 +41,12 @@ module WosStorage
                   end
     @http_get.perform
     if @http_get.header_str.nil? then
-       raise "Wos system error perform failed, #{Time.now.to_f}"
+       self.resubmit_error( error: "Wos system error perform failed , #{Time.now.to_f}" , exception_message: 'Read_failed' )
     end
     headers=parse_headers(@http_get.header_str)
     if headers["x-ddn-status"]!="0 ok" then
-       raise "Wos system error, #{Time.now.to_f}, #{JSON.pretty_generate(headers)}"
+       self.resubmit_error( error: "Wos system error NOT ok , #{Time.now.to_f}" , exception_message: 'Read_failed' )
     end
-    
   end
 
   def wos_seek_read_operation
