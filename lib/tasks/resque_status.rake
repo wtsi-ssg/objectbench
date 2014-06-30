@@ -14,6 +14,7 @@ task :delete_state => :environment  do
   Error.delete_all
   Resque::Failure.clear
   Resque.redis.del "queue:job"
+  Resque.redis.del "queue:job_enormous"
   Resque.redis.del "queue:job_huge"
   Resque.redis.del "queue:job_large"
   Resque.redis.del "queue:job_medium"

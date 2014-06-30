@@ -1,0 +1,18 @@
+#!/bin/bash
+export OBJECTBENCH_SYSTEM_UNDER_TEST="Wos"
+. "$( dirname "${BASH_SOURCE[0]}" )/config" 
+setup_two_read_write_test
+export OBJECTBENCH_INITAL_DISTRIBUTION="86, 103, 68, 113, 588, 405, 140, 29, 137, 117"
+export OBJECTBENCH_INITAL_FILES="${OB_D_BASE}/five_bytes \
+                                 ${OB_D_BASE}/11166_2#168.bai \
+                                 ${OB_D_BASE}/11128_8#0_phix.flagstat \
+                                 ${OB_D_BASE}/11330_1#19.bamcheck  \
+                                 ${OB_D_BASE}/11304_1#86_phix_quality_error.txt \
+                                 ${OB_D_BASE}/11310_2#56_phix_quality_cycle_surv.txt 
+                                 ${OB_D_BASE}/6320_5.bai \
+                                 ${OB_D_BASE}/6244_1#9.bam \
+                                 ${OB_D_BASE}/6350_4#1.bam \
+                                 ${OB_D_BASE}/11149_5#12.cram \
+                                 ${OB_D_BASE}/7231_1#146.bam"
+export OBJECTBENCH_TEST_WORKLOAD_DISTRIBUTION="60000,40000,0"
+two_phase_test

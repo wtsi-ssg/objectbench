@@ -7,6 +7,7 @@ OBJECT_BENCH_REQUE_ON_FAILURE="false" bundle exec rake object_bench:persist_resq
 echo "clearing errors"
 bundle exec rake object_bench:delete_resque_errors
 export OBJECTBENCH_TAG="Test_run_${OBJECTBENCH_SYSTEM_UNDER_TEST}_bulk_write_$$_${OBJECTBENCH_RUN_NAME}"
+export OBJECTBENCH_TAG_PHASE1=${OBJECTBENCH_TAG}
 echo "Tagging tests as ${OBJECTBENCH_TAG}"
 echo closing floodgates
 rake object_bench:close_floodgate
@@ -96,8 +97,12 @@ bundle exec rake object_bench:delete_resque_errors
 function write_errors {
 echo "Fetching results"
 bundle exec rake object_bench:display_report > $OBJECTBENCH_RESULTS/results_${OBJECTBENCH_TAG}
+OBJECTBENCH_TAG=${OBJECTBENCH_TAG_PHASE1} bundle exec rake object_bench:display_report > $OBJECTBENCH_RESULTS/results_${OBJECTBENCH_TAG_PHASE1}
 echo "Fetching errors"
 bundle exec rake object_bench:display_historic_errors > $OBJECTBENCH_RESULTS/errors_${OBJECTBENCH_TAG}
+OBJECTBENCH_TAG=${OBJECTBENCH_TAG_PHASE1} bundle exec rake object_bench:display_historic_errors > $OBJECTBENCH_RESULTS/errors_${OBJECTBENCH_TAG_PHASE1}
 echo "Fetching stats"
 bundle exec rake object_bench:stats_report > $OBJECTBENCH_RESULTS/stats_${OBJECTBENCH_TAG}
+OBJECTBENCH_TAG=${OBJECTBENCH_TAG_PHASE1} bundle exec rake object_bench:stats_report > $OBJECTBENCH_RESULTS/stats_${OBJECTBENCH_TAG_PHASE1}
+
 }

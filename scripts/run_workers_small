@@ -3,13 +3,12 @@
 . "$( dirname "${BASH_SOURCE[0]}" )/config" 
 # copy the files to the local space....
 mkdir -p  /local/scratch01/jb23/src_files
-( cd /local/scratch01/jb23/ ; rm * )
 (cd /warehouse/isg_wh_scratch01/users/jb23/object_test ; rsync -av --progress zero_length five_bytes 11166_2#168.bai 11128_8#0_phix.flagstat 11330_1#19.bamcheck 11304_1#86_phix_quality_error.txt 11310_2#56_phix_quality_cycle_surv.txt 6320_5.bai 6244_1#9.bam 6350_4#1.bam 11149_5#12.cram 7231_1#146.bam 6.5GB /local/scratch01/jb23/src_files ) 
-( cd /local/scratch01/jb23/ ; rm * )
-COUNT=1  QUEUE="job_enormous" bundle exec rake resque:workers &
-COUNT=22  QUEUE="job_huge" bundle exec rake resque:workers &
-COUNT=30  QUEUE="job_large" bundle exec rake resque:workers &
-COUNT=9  QUEUE="job_medium" bundle exec rake resque:workers &
+#COUNT=1  QUEUE="*" bundle exec rake resque:workers
+#exit
+COUNT=1  QUEUE="job_huge" bundle exec rake resque:workers &
+COUNT=1  QUEUE="job_large" bundle exec rake resque:workers &
+COUNT=1  QUEUE="job_medium" bundle exec rake resque:workers &
 COUNT=1   QUEUE="job_small" bundle exec rake resque:workers &
 COUNT=1  QUEUE="job_tiny" bundle exec rake resque:workers &
 

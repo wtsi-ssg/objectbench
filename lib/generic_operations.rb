@@ -29,7 +29,12 @@ module GenericOperations
      Resque.enqueue(Job_Large,job.id)
      return
    end  
-   Resque.enqueue(Job_Huge,job.id)
+   if (size < 10000000000 )
+     #Less than 10G
+     Resque.enqueue(Job_Huge,job.id)
+     return
+   end  
+   Resque.enqueue(Job_Enormous,job.id)
   end
 
 

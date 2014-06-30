@@ -83,20 +83,28 @@ end
 
 desc "Ouputs statistics, Define OBJECTBENCH_TAG to select the run to display"
 task :stats_report => :environment  do
+  puts "operation,size,errors,n,mean,standard deviation\n" 
   tag=ENV['OBJECTBENCH_TAG'] || "Default_tag" 
-  errors = Job.where("tag  like ? and  error_id is NOT NULL", tag )
-  sum=0
-  sq_sum=0
-  work_to_consider=Job.where("tag  like ? and  error_id is NULL", tag )
-  n=work_to_consider.count
-  work_to_consider.each do
-    |task|
-    sum=sum+(task.work_ends.to_f - task.work_starts.to_f)
-    sq_sum=sq_sum+((task.work_ends.to_f - task.work_starts.to_f)**2)
+  operations=Job.where("tag like '#{tag}'").select(:operation).map(&:operation).uniq
+  operations.each do
+    |operation|
+    sizes=Job.where("tag  like ? AND operation= ?", tag , operation ).select(:length).map(&:length).uniq
+    sizes.each do 
+      |size|
+      errors = Job.where("tag  like ? and  error_id is NOT NULL AND operation= ? and length= ?", tag , operation, size )
+      sum=0
+      sq_sum=0
+      work_to_consider=Job.where("tag  like ? and  error_id is NULL AND operation= ? and length =?", tag ,operation, size )
+      n=work_to_consider.count
+      work_to_consider.each do
+        |task|
+        sum=sum+(task.work_ends.to_f - task.work_starts.to_f)
+        sq_sum=sq_sum+((task.work_ends.to_f - task.work_starts.to_f)**2)
+      end
+      mean=sum/n
+      puts "#{operation},#{size},#{errors.count}, #{n},  #{mean}, #{ ((sq_sum/n)-(mean**2))**0.5 }"
+    end
   end
-  mean=sum/n
-  puts "Errors,n,mean,standard deviation\n"
-  puts "#{errors.count}, #{n},  #{mean}, #{ ((sq_sum/n)-(mean**2))**0.5 }"
 end
 
 end
