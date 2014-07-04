@@ -94,7 +94,7 @@ task :stats_report => :environment  do
       errors = Job.where("tag  like ? and  error_id is NOT NULL AND operation= ? and length= ?", tag , operation, size )
       sum=0
       sq_sum=0
-      work_to_consider=Job.where("tag  like ? and  error_id is NULL AND operation= ? and length =?", tag ,operation, size )
+      work_to_consider=Job.where("tag  like ? and  error_id is NULL AND operation= ? and length =? and work_ends>work_starts", tag ,operation, size )
       n=work_to_consider.count
       work_to_consider.each do
         |task|
