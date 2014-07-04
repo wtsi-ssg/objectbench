@@ -26,7 +26,7 @@ module IrodsStorage
     # We steal the path here which is evil however...
     path=download.path
     download.close
-    download.unlink   # deletes the temp file
+    download.unlink
     run_cmd("iget  #{self.object_identifier} #{path}")
     logger.info  "Irods Read #{self.id}"
   end

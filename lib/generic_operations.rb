@@ -99,6 +99,7 @@ module GenericOperations
   def read_operation
     logger.info  "Read #{self.id}"
     download=Tempfile.new('objectbench', ENV['OBJECTBENCH_TMPDIR'] || '/tmp',:encoding => 'ascii-8bit')
+    filename=download.path
     self.start_work
     case self.storage_type
     when "Null_Storage"
@@ -118,14 +119,23 @@ module GenericOperations
       download.unlink
       return
     end
-    verified=FileUtils.compare_file(self.reference_file,download.path)
+    if filename.nil?
+      self.resubmit_error( error: "Download path nil" , exception_message: 'Read_failed' ) ;
+      return ;
+    end
+    begin
+      verified=FileUtils.compare_file(self.reference_file,filename)
+    rescue
+      self.resubmit_error( error: "Verification failed" , exception_message: 'Read_failed' ) ;
+      return
+    end
     if ! verified
-       if File.size(download.path) == 0 then
+       if File.size(filename) == 0 then
          # If it was supposed to be zero length then 
          # the compare would have not failed.
          self.resubmit_error( error: "Zero Length file (#{self.reference_file})" , exception_message: 'Read_failed' ) ;
        else
-         self.resubmit_error( error: "File corruption error (#{self.reference_file}- #{download.path} )" , exception_message: 'Read_failed' )
+         self.resubmit_error( error: "File corruption error (#{self.reference_file}- #{filename} )" , exception_message: 'Read_failed' )
        end
        if ENV['OBJECTBENCH_KEEP_BROKEN'] != 'TRUE'
           download.unlink
@@ -133,7 +143,7 @@ module GenericOperations
        return 
     else
       download.unlink
-      logger.info "compare succeeded for (#{self.reference_file}, #{download.path} )"
+      logger.info "compare succeeded for (#{self.reference_file}, #{filename} )"
     end
 
   end
