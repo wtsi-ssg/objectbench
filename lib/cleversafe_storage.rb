@@ -10,18 +10,26 @@ module CleversafeStorage
 
   def cleversafe_read_operation(download)
     # I can't get the read api to work so lets take the other approach
+    # And another as this doesn't buffer, but pulls it all in to memory
     url="#{ENV['OBJECTBENCH_CLEVERSAFE_ENDPOINT']}#{ENV['OBJECTBENCH_CLEVERSAFE_VAULT']}/#{self.object_identifier}"
+    http_get=Curl::Easy.new("#{url}")
+    http_get.http_auth_types = :basic
+    http_get.username = ENV['OBJECTBENCH_CLEVERSAFE_USERNAME']
+    http_get.password = ENV['OBJECTBENCH_CLEVERSAFE_PASSWORD']
+
     logger.info  "Clevesafe Read #{url}"
-    resource = RestClient::Resource.new url,
-                                        ENV['OBJECTBENCH_CLEVERSAFE_USERNAME'],
-                                        ENV['OBJECTBENCH_CLEVERSAFE_PASSWORD']
     if !self.start.nil?
-      options={"Range" => "bytes=#{self.start}-#{self.start+self.size-1}"}
-    else
-      options={}
+      http_get.headers["Range"]= "bytes=#{self.start}-#{self.start+self.size-1}"
     end
-    resource.get(options)  do |resp|
-      download.write(resp)
+    old_on_body = http_get.on_body do |data|
+                       result = old_on_body ?  old_on_body.call(data) : data.length
+                       download << data if result == data.length
+                       result
+                  end
+    http_get.on_failure { self.resubmit_error( error: "Wos general failure error NOT ok , #{Time.now.to_f}" , exception_message: 'Read_failed' ) }
+    http_get.perform
+    if http_get.header_str.nil? then
+       self.resubmit_error( error: "Cleversafe system error perform failed , #{Time.now.to_f}" , exception_message: 'Read_failed' )
     end
   end
 
