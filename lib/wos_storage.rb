@@ -34,6 +34,12 @@ module WosStorage
   def wos_read_operation(download)
     wos_init
     @http_get.headers["x-ddn-oid"]=self.object_identifier;
+    if !self.start.nil?
+       @http_get.headers["Range"]= "bytes=#{self.start}-#{self.start+self.size-1}"
+    else
+      @http_get.headers["Range"]= ""
+    end
+
     old_on_body = @http_get.on_body do |data|
                          result = old_on_body ?  old_on_body.call(data) : data.length
                          download << data if result == data.length
