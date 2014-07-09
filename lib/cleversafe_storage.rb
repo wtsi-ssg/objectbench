@@ -26,7 +26,7 @@ module CleversafeStorage
                        download << data if result == data.length
                        result
                   end
-    http_get.on_failure { self.resubmit_error( error: "Wos general failure error NOT ok , #{Time.now.to_f}" , exception_message: 'Read_failed' ) }
+    http_get.on_failure { self.resubmit_error( error: "Cleversafe general failure error NOT ok , #{Time.now.to_f}" , exception_message: 'Read_failed' ) }
     http_get.perform
     if http_get.header_str.nil? then
        self.resubmit_error( error: "Cleversafe system error perform failed , #{Time.now.to_f}" , exception_message: 'Read_failed' )
