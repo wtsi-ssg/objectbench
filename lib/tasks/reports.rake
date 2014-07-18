@@ -46,16 +46,19 @@ task :display_report => :environment  do
       #  ( work_starts <? and work_ends > ?) work is running all in the window
       work_to_consider=Job.where("tag like ? and operation=?  and error_id is NULL and ( ( work_starts >= ? and work_starts < ?) or ( work_ends >= ? and work_ends < ?) or ( work_starts <? and work_ends > ? ) )" , tag ,operation,start_sample ,end_sample,start_sample,end_sample,start_sample,end_sample )
       failed_jobs=Job.where("tag like ? and operation=?  and error_id is NOT NULL and ( ( work_starts >= ? and work_starts < ?) or ( work_ends >= ? and work_ends < ?) or ( work_starts <? and work_ends > ? ) )" , tag ,operation,start_sample ,end_sample,start_sample,end_sample,start_sample,end_sample ) 
+      unknown_failure=0
       # Now some fun for each chunk of work we need to calculate the amount of bytes moved per second for the task
       # Later we can multiple this by how long the task was running in the window
       bytes=0
       total_duration=0
       work_to_consider.each do |task|
         if task.work_ends.nil?
-          raise "Panic no end time recorded"
+          unknown_failure=unknown_failure+1
+          next
         end
         if task.work_starts.nil?
-          raise "Panic no start time recorded"
+          unknown_failure=unknown_failure+1
+          next
         end
         duration=[task.work_ends.to_f,end_sample].min - [task.work_starts.to_f,start_sample].max
         total_duration=total_duration+duration
@@ -67,7 +70,9 @@ task :display_report => :environment  do
       end 
       # And now condsider the errors
       # I have a deep suspicon that if I knew what I was doing there is a good active record way to do this.
-      number_of_errrors=0
+      #
+      # Unknown failures appear everywhere.
+      number_of_errrors=unknown_failure
       failed_jobs.each do |task|
         error=Error.find(task.error_id)
         if error.reported_at.to_i >= start_sample and  error.reported_at.to_i < end_sample 
