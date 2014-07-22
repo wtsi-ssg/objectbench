@@ -37,6 +37,9 @@ module WosStorage
     @http_put.post(File.read(self.reference_file))
     headers=parse_headers(@http_put.header_str)
     self.object_identifier=headers["x-ddn-oid"]
+    if self.object_identifier.nil? 
+       self.resubmit_error( error: "No object_identifier recorded, #{JSON.pretty_generate(headers)}" , exception_message: 'Write_failed' )
+    end
     self.save
     if headers["x-ddn-status"]!="0 ok" then
       self.resubmit_error( error: "Wos system error , #{Time.now.to_f},#{JSON.pretty_generate(headers)}" , exception_message: 'Write_failed' )
