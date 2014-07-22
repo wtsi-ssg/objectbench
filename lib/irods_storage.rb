@@ -28,7 +28,7 @@ module IrodsStorage
     irods_init
     logger.info  "Irods Write #{self.id}"
     self.object_identifier="#{ENV['OBJECTBENCH_IRODS_PREFIX']}#{SecureRandom.uuid}"
-    run_cmd("iput -R #{ENV['OBJECTBENCH_IRODS_RESOURCE']} #{self.reference_file} #{self.object_identifier}")
+    run_cmd("iput -R #{ENV['OBJECTBENCH_IRODS_RESOURCE']} -K #{self.reference_file} #{self.object_identifier}")
     self.save
     
   end
@@ -39,7 +39,7 @@ module IrodsStorage
     path=download.path
     download.close
     download.unlink
-    run_cmd("iget  #{self.object_identifier} #{path}")
+    run_cmd("iget -K  #{self.object_identifier} #{path}")
     logger.info  "Irods Read #{self.id}"
   end
 
