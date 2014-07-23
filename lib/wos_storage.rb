@@ -19,23 +19,17 @@ module WosStorage
     # mutlipart uploads defeats me, I take refuge in the idea that
     # doing the right thing the majority of the time is good enough
     # 268435456 is 2GB in bytes btw
-    if self.length > (ENV['OBJECTBENCH_WOS_MAX_IN_MEM'] || 268435456 ) then
-      cmd ="curl   --noproxy '*' -X POST --data-binary @#{self.reference_file} -H x-ddn-policy:#{ENV['OBJECTBENCH_WOS_POLICY']} #{ENV['OBJECTBENCH_WOS_ENDPOINT']}cmd/put  -v 2>&1  | sed -n 's/< x-ddn-oid: //p'"
+    if self.length > (ENV['OBJECTBENCH_WOS_MAX_IN_MEM'].to_i || 268435456 ) then
+      cmd ="curl   --noproxy '*' -X POST --data-binary @#{self.reference_file} -H x-ddn-policy:#{ENV['OBJECTBENCH_WOS_POLICY']} #{ENV['OBJECTBENCH_WOS_ENDPOINT']}cmd/put  -v 2>&1 | grep '< ' | cut -c 3-"
       logger.info "Large file #{cmd}"
       run= IO.popen(cmd)
-      ident=run.readlines[0] 
-      if ident == "" then
-        self.resubmit_error( error: "Large wos write failed, #{Time.now.to_f}" , exception_message: 'Write_failed' )
-      end
-      # this gives us for example
-      # "MCNB2oifBiGYrlCRLc-lRlvZuIi_ORa3F6sMCfBE\r\n"
-      self.object_identifier=ident
-      self.save
-      return ;
+      headers=parse_headers(run.read)
+      logger.info " #{JSON.pretty_generate(headers)}"
+    else
+      wos_init
+      @http_put.post(File.read(self.reference_file))
+      headers=parse_headers(@http_put.header_str)
     end
-    wos_init
-    @http_put.post(File.read(self.reference_file))
-    headers=parse_headers(@http_put.header_str)
     self.object_identifier=headers["x-ddn-oid"]
     if self.object_identifier.nil? 
        self.resubmit_error( error: "No object_identifier recorded, #{JSON.pretty_generate(headers)}" , exception_message: 'Write_failed' )
